@@ -233,3 +233,63 @@ These questions are designed to have **no single correct answer**. You are evalu
 
 **Red Flag:** If they claim Power BI can do something it fundamentally cannot (e.g., "You can delete rows from VertiPaq without refresh"), they lack deep technical honesty.
 **Green Flag:** If they explain the *trade-off* (e.g., "We can do X, but it increases refresh time by 50%"), they are thinking like an architect.
+
+Here are 35 **additional** deeply twisted, nuanced, and architecturally complex Power BI interview questions. These focus on the **intersections of technologies** (Fabric, DAX, M, Security), **edge-case behaviors**, and **strategic paradoxes** that only emerge after years of production troubleshooting.
+
+### **Section 1: The Fabric & Direct Lake Quirks**
+1.  **Direct Lake Fallback Logic:** Direct Lake queries bypass the Formula Engine for most operations. If you use a DAX function that is not supported in Direct Lake mode (e.g., certain text functions), the engine falls back to DirectQuery. How do you identify *which* specific measure triggered the fallback without enabling verbose logging?
+2.  **OneLake Shortcut Permissions:** You create a Shortcut in OneLake pointing to a ADLS Gen2 folder. You grant a user access to the Power BI Workspace but not the underlying ADLS folder. When they query the Direct Lake model, do they get an error, empty data, or a security prompt? Where does the permission check happen?
+3.  **Dataflow Gen2 vs. Standard Dataflows:** Dataflow Gen2 writes to Lakehouse tables. Standard Dataflows write to Power BI storage. If you connect a Power BI Dataset to a Dataflow Gen2 entity using Direct Lake, what happens to the refresh schedule dependency? Does the dataset wait for the Dataflow?
+4.  **The "Duplicate" Lakehouse Table:** You have a Lakehouse table imported via Direct Lake. You also import the same table via Import mode for historical archiving. You create a relationship between them. Why does the engine potentially treat these as two separate identities despite having the same source?
+5.  **Fabric Capacity Throttling:** In Power BI Premium, throttling is based on CPU. In Fabric, it's based on Capacity Units (CUs). How does a spiky Direct Lake query impact the CU balance differently than a scheduled Import refresh, and how do you monitor this in real-time?
+6.  **Notebook vs. Dataflow Logic:** You have complex transformation logic in a Spark Notebook. You move it to a Dataflow Gen2. You notice the data types change (e.g., Decimal vs. Double). Why does the engine inference differ between Spark SQL and Dataflow M logic?
+7.  **Real-Time Intelligence vs. Direct Lake:** Microsoft pushes Real-Time Intelligence for streaming. When do you choose a Real-Time Dashboard over a Direct Lake model with a 1-minute refresh policy? What is the latency vs. cost breaking point?
+8.  **The "Read-Only" Lakehouse:** You connect to a Lakehouse that is marked as "Read-Only" for certain users. Does Direct Lake respect this at the query level, or does it require RLS to be defined in the Power BI model to enforce it?
+9.  **Cross-Workspace Shortcuts:** You create a Shortcut in Workspace A pointing to a Lakehouse in Workspace B. You delete Workspace B. Does the dataset in Workspace A fail immediately, or only upon refresh? How do you handle this dependency chain?
+10. **V-Order Optimization:** Direct Lake performance relies on V-Order optimized Parquet files. If your source system writes standard Parquet, how does Direct Lake performance degrade, and can Power BI optimize these files on the fly during load?
+
+### **Section 2: DAX Edge Cases & Window Functions**
+11. **`OFFSET` vs. `INDEX` Stability:** You use the new `OFFSET` function for running totals. The data source adds a new row overnight with a timestamp identical to an existing row. How does `OFFSET` determine order stability, and does it require a unique key to prevent non-deterministic results?
+12. **`WINDOW` Partitioning:** You use the `WINDOW` function with a partition clause. If the partition column contains BLANKs, are they grouped into a single partition or treated as separate entities? How does this affect your "Rank within Category" calculation?
+13. **`SELECTCOLUMNS` Materialization:** You use `SELECTCOLUMNS` to create a virtual table for a measure. Does this virtual table inherit the materialization limits of the Storage Engine, or is it purely Formula Engine? At what row count does it crash?
+14. **`DETAILROWS` Dynamic Security:** You configure a `DETAILROWS` expression for drill-through. If the user has RLS that hides the summary row, does the `DETAILROWS` query still execute and return data they shouldn't see, or is it blocked automatically?
+15. **`USERCULTURE` Formatting:** You use `USERCULTURE()` to dynamically format numbers. A user accesses the report via a shared link from a different country. Does the format update immediately, or does it cache based on the publisher's culture?
+16. **`COMBINEVALUES` Hash Collisions:** `COMBINEVALUES` creates a composite key for performance. If you combine two high-cardinality columns, what is the risk of hash collisions, and how do you validate data integrity after using it?
+17. **`TREATAS` vs. `LOOKUPVALUE` in Calc Groups:** Inside a Calculation Group, you need to apply a filter from a disconnected table. Is `TREATAS` safer than `LOOKUPVALUE` regarding context transition side effects? Why?
+18. **`ISINSCOPE` vs. `HASONEVALUE` in Matrix:** In a matrix with multiple hierarchy levels, `HASONEVALUE` returns TRUE for the leaf level. `ISINSCOPE` returns TRUE for all levels. How do you use this difference to create dynamic subtotals that behave differently at each hierarchy level?
+19. **`NATURALINNERJOIN` Memory Spike:** You join two large virtual tables using `NATURALINNERJOIN`. The result is smaller than the inputs, but memory usage spikes. Why does the engine need to materialize both sides fully before joining?
+20. **`SELECTEDVALUE` with Multiple Blanks:** If a column has two rows, both containing `BLANK()`, what does `SELECTEDVALUE` return? Does it treat them as identical values or distinct nulls?
+
+### **Section 3: Power Query (M) & Gateway Resilience**
+21. **`Web.Contents` Dynamic Headers:** You need to pass an OAuth token in the header using `Web.Contents`. The token expires every hour. How do you refresh the token *within* the M query without triggering a credential prompt during a scheduled gateway refresh?
+22. **`Value.NativeQuery` Injection:** You use `Value.NativeQuery` to pass dynamic SQL. If a user selects a value in a slicer that contains a single quote, how do you prevent SQL injection while maintaining query folding?
+23. **Gateway Cluster Load Balancing:** You have a gateway cluster with 3 nodes. Node 1 is overloaded. Does the gateway automatically route the next refresh request to Node 2, or is the load balancing done per data source definition?
+24. **`Table.Profile` Dynamic ETL:** You use `Table.Profile` to detect data types dynamically. If the source column changes from Text to Number overnight, how do you prevent the refresh from failing due to type conversion errors in subsequent steps?
+25. **`Function.InvokeAfter` Throttling:** You use `Function.InvokeAfter` to respect API rate limits. If the gateway restarts during the wait period, does the function resume or timeout? How do you handle state persistence?
+26. **Binary Column Expansion:** You import a column containing PDF binaries. You expand them to extract text. The refresh fails due to memory. How do you process these binaries in batches within Power Query without splitting the query into multiple dataflows?
+27. **`Privacy Levels` & Cross-Source Joins:** You join a SQL Table (Private) with a Web API (Public). You set privacy levels to "Ignore". The refresh works, but audit logs flag it. What is the secure alternative that doesn't break folding?
+28. **`OData.Feed` Pagination:** You connect to an OData feed with server-driven pagination. Power Query stops at page 50. How do you force it to continue until the `@odata.nextLink` is null without writing custom pagination logic?
+29. **`DataSource.Extension` Custom Connector:** You build a custom connector. You sign it. Users install it. When you update the connector logic, do users need to reinstall the `.mez` file, or does the service update it automatically?
+30. **`Table.Buffer` & Folding:** You use `Table.Buffer` to fix a sorting issue. Query folding breaks. Is there any scenario where `Table.Buffer` *preserves* folding, or is it a hard stop?
+
+### **Section 4: Security, Governance & Strategic Paradoxes**
+31. **Sensitivity Labels vs. Export:** You apply a "Confidential" sensitivity label that blocks export. A user takes a screenshot. You apply RLS to hide data. A user calculates the difference between two totals to infer the hidden data. Which control is more robust, and why?
+32. **The "Endorsement" Trust Chain:** You endorse a Dataset as "Promoted". You build a Report on it. You endorse the Report as "Certified". Someone changes the Dataset logic. Does the Report certification automatically revoke, or does it remain until manual review?
+33. **Service Principal vs. User Identity:** You configure refresh using a Service Principal. RLS is enabled. Does the Service Principal bypass RLS, or do you need to pass the user's identity via the API for RLS to work during refresh?
+34. **XMLA Endpoint Write-Back:** You enable XMLA Endpoint Read/Write. You use Tabular Editor to deploy a partition. The Power BI Service shows the dataset as "Failed to Refresh" because the service doesn't know the partition changed. How do you sync the state?
+35. **The "No Power BI" Decision:** You are asked to build a operational dashboard requiring row-level write-back, complex transactional locking, and sub-second latency. You say "No". What specific alternative architecture (e.g., Power Apps + SQL, Custom App) do you propose, and how do you justify the cost increase to the stakeholder?
+
+---
+
+### **Interviewer Guide: Decoding the "Twisted" Answers**
+
+These questions are designed to have **no single correct answer**. You are evaluating the candidate's **reasoning process**.
+
+*   **Look for "It Depends" with Justification:** If they say "Always do X," they fail. If they say "It depends on Y, because of Z," they pass.
+*   **Look for Engine Intuition:** For the "Memory Cliff" or "Auto-Exist" questions, do they understand *why* the engine behaves that way (hash tables, dictionary encoding), or are they just guessing?
+*   **Look for Ethical Awareness:** For security questions (Inference Attacks, GDPR), do they understand that technical possibility doesn't equal compliance safety?
+*   **Look for Humility:** For the "Unsolvable Performance Issue," the best answer is often "I would engage Microsoft Support" or "I would reconsider the business requirement," rather than "I would tweak the DAX more."
+*   **Look for Future-Proofing:** For the "End of Life" question, are they thinking about abstraction layers and decoupling logic from specific features?
+
+**Red Flag:** If they claim Power BI can do something it fundamentally cannot (e.g., "You can delete rows from VertiPaq without refresh"), they lack deep technical honesty.
+**Green Flag:** If they explain the *trade-off* (e.g., "We can do X, but it increases refresh time by 50%"), they are thinking like an architect.
