@@ -119,3 +119,61 @@ For these questions, there is often no single "correct" answer. You are looking 
     *   Understands the cost implications (Premium capacity vs. Pro).
     *   Admits when they don't know something but explains how they would find the solution.
     *   References **Microsoft Fabric** or modern features (shows they keep learning).
+
+Here are 35 **additional** deep-thinking, unconventional, and architecturally focused Power BI interview questions. These are designed to probe the candidate's understanding of the **engine internals, operational resilience, and strategic architecture** beyond standard development tasks.
+
+### **Section 1: VertiPaq Engine & Memory Internals**
+1.  **The Sorting Compression Paradox:** You notice that sorting a high-cardinality text column *before* loading it into Power BI improves compression ratios, but adding that same column to a relationship increases memory usage significantly. Explain the internal data structure difference between a sorted column and a relationship hash table.
+2.  **Storage Engine vs. Formula Engine Handoff:** Your DAX Studio trace shows a query spending 90% of its time in the Formula Engine (FE) with a tiny datacache returned by the Storage Engine (SE). Without changing the DAX logic, what specific modeling changes can you make to force more work onto the Storage Engine?
+3.  **`VALUES` vs. `DISTINCT` Memory Footprint:** In a specific filter context, `VALUES` and `DISTINCT` return the exact same rows, but `VALUES` consumes 5x more memory. Explain the internal table structure (including the "Blank" row handling) that causes this discrepancy.
+4.  **Auto Date/Time Hidden Bloat:** You disable Auto Date/Time and your model size drops by 40%. Explain exactly what hidden tables Power BI creates when this is enabled and how they impact relationship cardinality evaluation.
+5.  **Relationship Chain Latency:** You have a chain of 1:1 relationships (Table A -> B -> C -> D). Query performance is noticeably slower than a direct A -> D relationship. Why does the VertiPaq engine traverse each link individually rather than optimizing the path?
+6.  **Materialization Limits:** You use `ADDCOLUMNS` inside a `SUMX` over a million rows. At what point does the engine decide to spill to disk vs. keep in memory, and how does this impact gateway refresh stability?
+7.  **The "Blank" Row in VertiPaq:** Every table in VertiPaq has a hidden "Blank" row. How does this row interact with `INNER JOIN` logic in DirectQuery vs. `LEFT JOIN` logic in Import mode, and when can it cause data duplication?
+
+### **Section 2: Advanced Calculation Groups & DAX Context**
+8.  **Calculation Group Precedence Conflict:** You have 'Time Intelligence' and 'Scenario' calculation groups. Users report that selecting 'Budget' scenario overrides 'YoY' calculation incorrectly. How do you enforce evaluation order without merging the groups into one?
+9.  **Circular Dependency in Calc Groups:** You create a calculation group that references a measure, which implicitly references the calculation group. How does the engine detect this loop, and is there a valid architectural pattern to resolve it without removing the logic?
+10. **`ALLSELECTED` Nested Context:** In a matrix with Row and Column subtotals, `ALLSELECTED` behaves differently on the Grand Total vs. Row Total. Explain the iteration context and filter shadowing causing this behavior.
+11. **`ISFILTERED` vs. `ISCROSSFILTERED`:** In a model with bidirectional filtering, `ISFILTERED` returns TRUE but `ISCROSSFILTERED` returns FALSE for the same column. Explain the filter context origin (Direct vs. Propagated) causing this.
+12. **`KEEPFILTERS` Interaction:** You have a slicer and a visual filter. You use `KEEPFILTERS` in a measure. How does this change the intersection vs. replacement of the filter context, and when does it cause unexpected blank results?
+13. **Context Transition in Calculated Tables:** You use `CALCULATE` inside a calculated table definition. Does this trigger context transition? If there is no row context, what filter context is applied?
+14. **Dynamic Format String Logic:** You need a measure that shows "K" for thousands and "M" for millions dynamically based on the value. How do you implement this without breaking the underlying numeric value used for sorting and totals?
+15. **`TREATAS` Performance Penalty:** You use `TREATAS` to create a virtual relationship. Performance is 10x slower than a physical relationship. What is the engine doing differently during filter propagation that causes this overhead?
+
+### **Section 3: DirectQuery, Hybrid & Query Folding**
+16. **DirectQuery Pushdown Failure:** You write a simple DAX measure, but SQL Profiler shows complex SQL generated. Which specific DAX functions are known to break query folding in DirectQuery, and how do you verify this without Profiler?
+17. **`CROSSFILTER('None')` in DirectQuery:** You use `CROSSFILTER` to disable a relationship. In DirectQuery, this forces a specific SQL join type. Which one, and why is it computationally expensive compared to Import mode?
+18. **SQL NULL vs. Power BI BLANK:** In DirectQuery, a SQL `NULL` behaves differently than a Power BI `BLANK` in a join condition. How does this affect inner vs. outer joins generated by the engine?
+19. **`USERELATIONSHIP` & Aggregation Tables:** You define an aggregation table. When you use `USERELATIONSHIP` to switch dates, the aggregation table is ignored. Why does the inactive relationship break the aggregation match?
+20. **Late-Arriving Dimension Handling:** Your Incremental Refresh policy loads new facts daily. A new product category is created today, but facts for it existed yesterday. How do you backfill the dimension relationship without re-refreshing the entire fact table?
+21. **Hybrid Table Consistency:** You have a Composite Model (Import + DirectQuery). You notice data discrepancy between the two for the same date. How do you debug the storage mode boundary to ensure consistency?
+22. **Query Folding & Privacy Levels:** You are combining data from a SQL Server (Private) and a Web API (Public). You get a Formula.Firewall error. Changing privacy levels fixes it but raises security concerns. What is the secure architectural fix?
+23. **DirectQuery & Time Zones:** You store UTC timestamps. Users in NY and London see different "Today" values. How do you handle the "Today" filter logic in DirectQuery without storing multiple date columns?
+24. **Aggregation Table Mismatch:** Your aggregation table is not being hit by the engine, and queries are going straight to the detailed DirectQuery source. What are three subtle reasons (besides mapping) why the engine ignores the aggregation?
+25. **`SUMMARIZE` vs. `SUMMARIZECOLUMNS`:** Microsoft recommends `SUMMARIZECOLUMNS` over `SUMMARIZE`. In what specific DAX pattern is `SUMMARIZE` still required or superior in a DirectQuery model?
+
+### **Section 4: Operational Resilience & Architecture**
+26. **Designing for Source Failure:** Your SQL source goes down during refresh. How do you configure the dataset to retain the last successful load rather than wiping the data or showing an error to users?
+27. **Capacity Throttling Graceful Degradation:** Your Premium capacity is throttled during month-end close. How do you design the report to inform users of "Delayed Data" rather than showing a spinner forever?
+28. **Silent Dataflow Failure:** Your dataflow refresh says "Success" but the table is empty because the source filter changed. How do you implement a "Row Count Check" failure condition in the pipeline?
+29. **Multi-Geo Data Residency:** You have EU and US data. EU data cannot leave EU servers. How do you create a global consolidated report without violating GDPR data residency rules?
+30. **Schema Drift Resilience:** Your source system adds a column every week. Your Power Query breaks because of explicit column references. How do you design a "schema-agnostic" loading pattern in M?
+31. **Power BI as Orchestrator:** You need to trigger an Azure Data Factory pipeline when a Power BI dataflow refresh completes. What are the race condition risks, and how do you handle authentication securely?
+32. **Write-Back Transactional Integrity:** You implement write-back using Power Automate. Two users update the same record simultaneously. How do you handle locking or concurrency conflicts?
+33. **Embedded RLS Identity Mapping:** Your embedded app users are not in Azure AD. You need to map their app login to Power BI RLS roles dynamically. How do you pass this identity without exposing it in the URL?
+34. **Meta-Analysis of Tenant:** You need to build a report showing which datasets are consuming the most memory. Which DMVs or API endpoints do you query, and how do you handle authentication?
+35. **The "Unsolveable" Performance Issue:** You have optimized everything (model, DAX, source). It's still slow. What external factors (network, gateway, capacity, visual complexity) do you investigate next, and in what order?
+
+---
+
+### **Interviewer Guide: Evaluating "Deep Thinking" Answers**
+
+For this level of question, you are not looking for textbook definitions. You are looking for **war stories** and **architectural philosophy**.
+
+*   **The "It Depends" Indicator:** A senior professional knows that `SUMMARIZECOLUMNS` is better *unless* you need specific legacy behavior. If they give absolute answers, they may lack real-world troubleshooting experience.
+*   **Engine Awareness:** Look for mentions of **Storage Engine (SE)** vs. **Formula Engine (FE)**. A 4-year pro should know that pushing work to the SE is the key to performance.
+*   **Operational Mindset:** Questions about failure (Q26, Q27, Q28) test if they build reports for *production* or just for *development*. A junior builds for success; a senior builds for failure.
+*   **Security Nuance:** For RLS/Geo questions, ensure they understand the legal/compliance implications, not just the technical toggle.
+*   **Tooling:** They should mention **DAX Studio**, **VertiPaq Analyzer**, **SQL Profiler**, or **Power BI Admin APIs**. If they only use the Power BI Desktop UI, they haven't done deep optimization.
+*   **Honesty:** For Q35 ("Unsolveable Issue"), the best answer is knowing when to escalate to Microsoft Support or when to admit a architectural refactor is needed rather than tweaking DAX.
