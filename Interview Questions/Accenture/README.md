@@ -1,0 +1,15 @@
+# Accenture
+
+*   [1. DAX Optimization](https://github.com/Balasubramanian-pg/Power-BI-Interview-Prep/blob/main/Interview%20Questions/Accenture/1.%20DAX%20Optimization.md)
+*   [11. Optimize Measures](https://github.com/Balasubramanian-pg/Power-BI-Interview-Prep/blob/main/Interview%20Questions/Accenture/11.%20Optimize%20Measures.md)
+*   [12. Schema](https://github.com/Balasubramanian-pg/Power-BI-Interview-Prep/blob/main/Interview%20Questions/Accenture/12.%20Schema.md)
+*   [13. TotalYTD](https://github.com/Balasubramanian-pg/Power-BI-Interview-Prep/blob/main/Interview%20Questions/Accenture/13.%20TotalYTD.md)
+*   [14. Treatas](https://github.com/Balasubramanian-pg/Power-BI-Interview-Prep/blob/main/Interview%20Questions/Accenture/14.%20Treatas.md)
+*   [2. Data Splitter](https://github.com/Balasubramanian-pg/Power-BI-Interview-Prep/blob/main/Interview%20Questions/Accenture/2.%20Data%20Splitter.md)
+*   [3. Dataflows](https://github.com/Balasubramanian-pg/Power-BI-Interview-Prep/blob/main/Interview%20Questions/Accenture/3.%20Dataflows.md)
+*   [4. Different Refresh Types](https://github.com/Balasubramanian-pg/Power-BI-Interview-Prep/blob/main/Interview%20Questions/Accenture/4.%20Different%20Refresh%20Types.md)
+*   [5. Challenges During Report Development](https://github.com/Balasubramanian-pg/Power-BI-Interview-Prep/blob/main/Interview%20Questions/Accenture/5.%20Challenges%20During%20Report%20Development.md)
+*   [6. Field Parameters](https://github.com/Balasubramanian-pg/Power-BI-Interview-Prep/blob/main/Interview%20Questions/Accenture/6.%20Field%20Parameters.md)
+*   [7. Default Total Sales](https://github.com/Balasubramanian-pg/Power-BI-Interview-Prep/blob/main/Interview%20Questions/Accenture/7.%20Default%20Total%20Sales.md)
+*   [8. RLS](https://github.com/Balasubramanian-pg/Power-BI-Interview-Prep/blob/main/Interview%20Questions/Accenture/8.%20RLS.md)
+*   [9. Custom Sorting](https://github.com/Balasubramanian-pg/Power-BI-Interview-Prep/blob/main/Interview%20Questions/Accenture/9.%20Custom%20Sorting.md)
