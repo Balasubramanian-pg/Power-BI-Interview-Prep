@@ -6,7 +6,6 @@ EBITDA measures a company’s overall financial performance. It is widely used i
 **Accrual vs. Cash Basis Reporting**
 Accrual accounting recognizes revenue when earned, regardless of when payment is received, while cash accounting records revenue only when payment is received. Big 4 firms often require adjustments between these methods for accurate financial reporting. Knowing the difference and when to apply each is critical for compliance and decision-making.
 
----
 
 # Client Analytics & KPI Tracking
 
@@ -16,7 +15,6 @@ Churn rate measures the percentage of customers who stop using a company’s pro
 **Net Promoter Score (NPS) Segmentation**
 NPS categorizes customers into Promoters, Passives, and Detractors based on their likelihood to recommend a company. This segmentation helps businesses gauge customer loyalty and identify areas for improvement. Linking NPS to revenue growth demonstrates the impact of customer experience on financial performance.
 
----
 
 # Budgeting & Forecasting
 
@@ -26,7 +24,6 @@ MAPE evaluates the accuracy of demand forecasts by comparing actual sales to pre
 **Variance Analysis with Waterfall Logic**
 Variance analysis breaks down the differences between budgeted and actual performance, identifying drivers such as volume and price changes. This helps businesses understand the root causes of deviations and make informed adjustments.
 
----
 
 # Data Governance & Quality
 
@@ -36,7 +33,6 @@ Duplicate records can distort data analysis and reporting. Identifying and remov
 **Missing Data Flags**
 Missing data can lead to incomplete or inaccurate analysis. Flagging missing data allows for timely corrections and ensures the reliability of reports and decision-making processes.
 
----
 
 # Industry-Specific Scenarios
 
@@ -46,7 +42,6 @@ Sell-through rate measures the percentage of inventory sold over a specific peri
 **Banking: Loan-to-Value (LTV) Ratio**
 LTV ratio compares the amount of a loan to the appraised value of the property securing it. It is a key risk assessment tool in banking, influencing lending decisions and regulatory compliance, such as Basel III requirements.
 
----
 
 # Advanced-But-Practical Analytics
 
@@ -56,7 +51,6 @@ Dynamic Top N analysis allows businesses to focus on their best-performing produ
 **Time-Weighted Average (e.g., Average Balance)**
 Time-weighted averages, such as average daily balances, are essential in financial services for calculating interest and assessing account performance. This method ensures fairness and accuracy in financial reporting.
 
----
 
 # Audit & Reconciliation
 
@@ -66,7 +60,6 @@ Reconciliation ensures that subledger totals match the general ledger, identifyi
 **Threshold-Based Alerts**
 Threshold-based alerts flag unusual transactions, such as large amounts that may require review. These alerts are vital for anti-money laundering (AML) compliance and fraud detection, enabling proactive risk management.
 
----
 
 # Consulting Soft Skills
 
