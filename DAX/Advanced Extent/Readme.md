@@ -27,7 +27,6 @@
    ```
    *Tracks both valid time and transaction time for temporal analytics.*
 
----
 
 ### **Complex Hierarchies & Data Structures**
 3. **Ragged Hierarchy Rollup**  
@@ -50,7 +49,6 @@
    ```
    *Distributes costs proportionally using a driver (e.g., sales).*
 
----
 
 ### **Advanced SQL Simulation**
 5. **Simulated ROW_NUMBER()**  
@@ -77,7 +75,6 @@
    ```
    *Mimics `LEAD()` using `EARLIER` for row context.*
 
----
 
 ### **Real-Time & Dynamic Analysis**
 7. **Dynamic What-If with Multiple Parameters**  
@@ -99,7 +96,6 @@
    ```
    *Blends imported data with DirectQuery/real-time sources.*
 
----
 
 ### **Advanced Error Handling & Logging**
 9. **Multi-Layer Fallback Logic**  
@@ -128,7 +124,6 @@
     ```
     *Aggregates error details for debugging.*
 
----
 
 ### **AI & Advanced Analytics**
 11. **AI-Driven Anomaly Detection**  
@@ -150,7 +145,6 @@
     ```
     *Calculates Mean Absolute Error for forecast validation.*
 
----
 
 ### **Performance & Scalability**
 13. **Composite Model Optimization**  
@@ -177,7 +171,6 @@
     ```
     *Optimizes for large datasets by limiting partitions (conceptual example).*
 
----
 
 ### **Advanced Visualization & UX**
 15. **Dynamic Visual Interactions**  
@@ -202,7 +195,6 @@
     ```
     *Normalizes values for color saturation in heatmaps.*
 
----
 
 ### **Security & Compliance**
 17. **Time-Based Data Access**  
@@ -227,7 +219,6 @@
     ```
     *Anonymizes PII dynamically.*
 
----
 
 ### **Niche Use Cases**
 19. **Dynamic Data Storytelling**  
@@ -239,7 +230,6 @@
     ```
     *Generates natural-language summaries.*
 
----
 
 ### **Key Concepts to Discuss**
 - **Bi-Temporal Modeling**: Valid vs. transaction time tracking.
