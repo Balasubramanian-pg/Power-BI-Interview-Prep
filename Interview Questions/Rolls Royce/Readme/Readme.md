@@ -693,7 +693,6 @@ RETURN
 * **Check**: Compare actual Service UPN with expected format
 * **Solution**: Verify Security table uses correct UPN format from Azure AD
 
----
 
 ## Advanced RLS Scenarios
 
@@ -827,7 +826,6 @@ RETURN
     )
 ```
 
----
 
 ## Comparison: Static vs Dynamic RLS
 
@@ -847,7 +845,6 @@ RETURN
 > [!IMPORTANT]
 > For most enterprise scenarios with more than 10-20 distinct filter combinations, Dynamic RLS is the recommended approach.
 
----
 
 ## Flashcard Q&A Section
 
@@ -1062,7 +1059,6 @@ The `IN` operator checks if a column value exists in a table or list. Returns TR
 Supports multiple values: If user has access to 3 countries, all 3 will pass the filter.
 </details>
 
----
 
 ## Real-World Implementation Scenarios
 
@@ -1350,7 +1346,6 @@ RETURN
     )
 ```
 
----
 
 ## Integration with Other Power BI Features
 
@@ -1476,7 +1471,6 @@ var embedToken = await client.Reports.GenerateTokenInGroupAsync(
 4. Verify data matches Power BI Service view
 5. Create pivot table—RLS remains enforced
 
----
 
 ## Security Best Practices & Compliance
 
@@ -1624,7 +1618,6 @@ ORDER BY audit_log.AccessTime DESC
 - Default to most restrictive access
 - Explicit consent for broader access
 
----
 
 ## Performance Optimization Deep Dive
 
@@ -1834,7 +1827,6 @@ Users With RLS =
 DISTINCTCOUNT(ActivityLog[UserId])
 ```
 
----
 
 ## Migration Strategies
 
@@ -1985,7 +1977,6 @@ New-PowerBIReport -Path "dataset.pbix" -WorkspaceId $targetWorkspaceId -Name $da
 - Staged rollout (small user group first)
 - Monitoring dashboard for each environment
 
----
 
 ## Common Pitfalls and How to Avoid Them
 
@@ -2195,7 +2186,6 @@ RETURN
 > [!IMPORTANT]
 > Keep RLS DAX as simple as possible. Complex expressions dramatically impact performance and are harder to troubleshoot.
 
----
 
 ## Advanced DAX Patterns for RLS
 
@@ -2409,7 +2399,6 @@ RETURN
 | partner@external.com | CUST002 |
 | vendor@supplier.com | CUST003 |
 
----
 
 ## Testing and Validation Framework
 
@@ -2679,7 +2668,6 @@ performance_test("admin_with_all_data@company.com")
 **Approved By:** [Name]
 ```
 
----
 
 ## Documentation Best Practices
 
@@ -2832,7 +2820,6 @@ RETURN
 | 1.0 | 2025-10-02 | [Name] | Initial version |
 ```
 
----
 
 ## Final Summary and Key Takeaways
 
